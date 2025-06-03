@@ -20,24 +20,55 @@ def process_redis_data(filename):
     filename_keys = [key for key in all_keys if filename in key]
     filename_values = r.mget(filename_keys)
 
-    if len(filename_values) != len(data):
-        raise Exception("The lengths of the dataset and responses do not line up")
+    first_len = len(filename_values[0].split(','))
+    second_len = len(original_data) / 2
+    if first_len != second_len:
+        raise Exception("The lengths of the dataset {} and responses {} do not line up".format(first_len, second_len))
 
-    value_data = [[0] * 7 for _ in range(len(filename_values))]
+    html_elements_list = []
     for record_index, value in enumerate(filename_values):
+        print(value)
+        selection_counts = [0] * 7
         selections = value.split(',')
+        print(selections)
+
         for selection_index, selection in enumerate(selections):
             if selection == '':
-                value_data[record_index][0] += 1
+                selection_counts[0] += 1
             else:
-                value_data[record_index][int(index)] += 1
-    return original_data, value_data
+                selection_counts[int(selection)] += 1
+    
+        render_values = [selection_counts[1] + selection_counts[2] + selection_counts[3], selection_counts[4] + selection_counts[5] + selection_counts[6]] + \
+            [selection_counts[i] for i in range(1, 7)]
+
+        selection_element = """
+            <div>
+                <h3 style="white-space: pre;">
+                    Different         Same
+                    {}                           {}
+                </h3>
+                <div style="white-space: pre;">
+                    H     M     L     L     M     H
+                </div>
+                <div style="white-space: pre;">
+                    {}       {}      {}     {}      {}      {}
+                </div>
+            </div>
+        """.format(*render_values)
+        html_elements_list.append(selection_element)
+
+    return original_data, html_elements_list
 
 @app.route('/<filename>')
 def display_results_page(filename):
-    record_data, selection_data = process_redis_data(filename)
-    return render_template()
+    record_data, selection_html_elements = process_redis_data(filename)
+    return render_template("base.html", data=record_data, selections=selection_html_elements)
 
 @app.route('/')
 def default_display():
-    return display_results_page("ppirl.csv")
+    return display_results_page("data/ppirl.csv")
+
+@app.route('/favicon.ico')
+def favicon():
+    return '', 204  # No Content
+
