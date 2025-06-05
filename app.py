@@ -6,14 +6,26 @@ import csv
 import data_loader as dl
 import data_display as dd
 import data_model as dm
+import os
 
 app = Flask(__name__)
 
-some_condition_for_azure = False
-if some_condition_for_azure:
-    pass
+# Initialize Redis connection
+redis_url = os.environ.get("REDIS_URL")
+if redis_url:
+    r = redis.from_url(redis_url)
 else:
-    r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+    # Local development fallback
+    r = redis.Redis(
+        host=os.environ.get("REDIS_HOST", "localhost"),
+        port=int(os.environ.get("REDIS_PORT", "6379")),
+        password=os.environ.get("REDIS_PASSWORD", None),
+        ssl=(os.environ.get("REDIS_USE_TLS", "false").lower() == "true"),
+        decode_responses=True
+    )
+
+# If there are any global variables in the future, initialize them to None here and add 
+# @app.before_first_request initialization function
 
 def process_redis_data(filename):
     with open(filename, newline='') as f:
@@ -21,6 +33,8 @@ def process_redis_data(filename):
         data_pairs = [row for row in reader]
 
     all_keys = list(r.scan_iter())
+    print(all_keys)
+    print(type(all_keys[0]))
     filename_keys = [key for key in all_keys if filename in key]
     filename_values = r.mget(filename_keys)
 
@@ -131,3 +145,6 @@ def default_display():
 def favicon():
     return '', 204  # No Content
 
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 80))
+    app.run(host='0.0.0.0', port=port)
