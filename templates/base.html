@@ -3,25 +3,38 @@
     <head>
         <meta charset="utf-8">
         <title>PPIRL</title>
-        <link rel="stylesheet" href="../static/css/style.css?q=410" type="text/css">
+        <link rel="stylesheet" href="../static/css/style.css?q=905" type="text/css">
+        <link rel="stylesheet" href="../static/css/results.css" type="text/css">
+        <link rel="stylesheet" href="../static/css/ionicons.min.css" type="text/css">
+        <link rel="stylesheet" href="../static/css/select.css?q=122" type="text/css">
+        <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
         <link rel="stylesheet" href="../static/css/footer.css" type="text/css">
+        <link rel="stylesheet" href="../static/css/animate.min.css">
+        <script src="../static/javascript/jquery-3.2.1.min.js"></script>
+        <script src="../static/javascript/popper.min.js"></script>
+        <script src="../static/javascript/bootstrap.min.js"></script>
     </head>
 
     <body id="wrapper">
         <div style="display: flex">
+            <img src="../static/images/site/population_informatics_icon.png">
             <div id="title">
                 <h3>{{ title }}</h3>
             </div>
         </div>
-    </body>    
+    </body>   
     <body id="wrapper">
         {% include "header.html" %}
     </body>
     <body>
-        <div id="wrapper">
-            {% include "selections.html" %}
+        <div id="flex-row-wrapper">
+            {% include "table.html" %}
+            {% include "results.html" %}
         </div>
-
+    </body>
+    <br />
+    <br />
+    <body>
         <div id="footer_filler"></div>
         <footer class="footer">
             <div class="container">
