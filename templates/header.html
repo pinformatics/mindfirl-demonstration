@@ -19,16 +19,16 @@
             <div class="legend-section" style="flex: 1; padding: 0;">
                 <h4 style="padding: 0; margin: 0; white-space: nowrap; font-size: 0.9em;"><strong>Highlight discrepancies</strong></h4> 
                 <ul style="padding: 0; margin: 0; white-space: nowrap">
-                    <li><img src="../static/images/site/missing.png" alt="Missing fields" style="width: 20px; height: 20px;"> Missing fields</li>
-                    <li><img src="../static/images/site/replace.png" alt="Different characters" style="width: 20px; height: 20px;"> Different characters</li>
-                    <li><img src="../static/images/site/indel.png" alt="Extra characters" style="width: 20px; height: 20px;"> Extra characters</li>
+                    <li><img src="{{ url_for('static', filename='images/site/missing.png') }}" alt="Missing fields" style="width: 20px; height: 20px;"> Missing fields</li>
+                    <li><img src="{{ url_for('static', filename='images/site/replace.png') }}" alt="Different characters" style="width: 20px; height: 20px;"> Different characters</li>
+                    <li><img src="{{ url_for('static', filename='images/site/indel.png') }}" alt="Extra characters" style="width: 20px; height: 20px;"> Extra characters</li>
                 </ul>
             </div>
             <div class="legend-section" style="flex: 1; padding: 0;">
                 <ul style="padding: 0; margin-top: 0.9em; white-space: nowrap;">
-                    <li><img src="../static/images/site/transpose.png" alt="Transposed characters" style="width: 20px; height: 20px;"> Transposed characters</li>
-                    <li><img src="../static/images/site/name_swap.png" alt="Name/date swaps" style="width: 20px; height: 20px;"> Name/date swaps</li>
-                    <li><img src="../static/images/site/diff.png" alt="Major field differences" style="width: 20px; height: 20px;"> Major field differences</li>
+                    <li><img src="{{ url_for('static', filename='images/site/transpose.png') }}" alt="Transposed characters" style="width: 20px; height: 20px;"> Transposed characters</li>
+                    <li><img src="{{ url_for('static', filename='images/site/name_swap.png') }}" alt="Name/date swaps" style="width: 20px; height: 20px;"> Name/date swaps</li>
+                    <li><img src="{{ url_for('static', filename='images/site/diff.png') }}" alt="Major field differences" style="width: 20px; height: 20px;"> Major field differences</li>
                 </ul>
             </div>
         </div>
