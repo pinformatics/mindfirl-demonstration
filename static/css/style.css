@@ -33,7 +33,42 @@
 }
 
 #table {
+    width: 88vw;
+}
+
+h6 {
+    height: 5vh;
+    line-height: 5vh; /* vertically center text inside */
+    margin: 0;         /* remove default spacing */
+}
+
+#mobile-table {
+    /* display: flex; */
+    justify-content: center;
+    font-size: 2rem;
     width: 66vw;
+
+    font-family: Consolas, monaco, monospace, Courier, Droid Sans Mono;
+    font-weight: bold;
+    text-align: center;
+    overflow: hidden;
+}
+
+.table-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%; /* Ensures full height of cell if needed */
+}
+
+.table-wrapper > div {
+    flex: 1;
+}
+
+tr {
+    height: 5vh;
+    /* line-height: 5vh; */
 }
 
 #table_head {
@@ -176,18 +211,18 @@
 }
 
 .transpose_icon {
-    width: 20px;
-    height: 20px;
+    width: 2.5vh;
+    height: 2.5vh;
 }
 
 .freq_icon {
-    width: 20px;
-    height: 20px;
+    width: 2.5vh;
+    height: 2.5vh;
 }
 
 .missing_icon {
-    width: 20px;
-    height: 20px;
+    width: 2.5vh;
+    height: 2.5vh;
 }
 
 .swap_date_row {
@@ -335,10 +370,10 @@ select {
   text-align: center;
   background-color: #f9f9f9;
   border-top: 1px solid #e5e5e5;
-  /* position: absolute;
+  position: absolute;
   right: 0;
   bottom: 0;
-  left: 0; */
+  left: 0;
 }
 
 
@@ -360,6 +395,7 @@ table, th, td {
 
 td {
     text-align: center;
+    height: 100%
 }
 
 .header {
@@ -368,7 +404,7 @@ td {
 
 .td_item {
     text-align: left;
-    width: 1200px;
+    /* width: 1200px; */
 }
 
 .td_radio {

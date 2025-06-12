@@ -11,25 +11,26 @@ import os
 app = Flask(__name__)
 
 # Initialize Redis connection
-redis_url = os.environ.get("REDIS_URL")
-if redis_url:
-    r = redis.Redis(
-        host='mindfirl-redis.redis.cache.windows.net',    
-        port=6380,                  
-        username='default',         
-        password=os.environ.get("REDIS_PASSWORD", None),
-        ssl=True,                  
-        decode_responses=True
-    )
-else:
-    # Local development fallback
-    r = redis.Redis(
-        host=os.environ.get("REDIS_HOST", "localhost"),
-        port=int(os.environ.get("REDIS_PORT", "6379")),
-        password=os.environ.get("REDIS_PASSWORD", None),
-        ssl=(os.environ.get("REDIS_USE_TLS", "false").lower() == "true"),
-        decode_responses=True
-    )
+# redis_url = os.environ.get("REDIS_URL")
+# if redis_url:
+#     r = redis.Redis(
+#         host='mindfirl-redis.redis.cache.windows.net',    
+#         port=6380,                  
+#         username='default',         
+#         password=os.environ.get("REDIS_PASSWORD", None),
+#         ssl=True,                  
+#         decode_responses=True
+#     )
+# else:
+#     # Local development fallback
+#     r = redis.Redis(
+#         host=os.environ.get("REDIS_HOST", "localhost"),
+#         port=int(os.environ.get("REDIS_PORT", "6379")),
+#         password=os.environ.get("REDIS_PASSWORD", None),
+#         ssl=(os.environ.get("REDIS_USE_TLS", "false").lower() == "true"),
+#         decode_responses=True
+#     )
+#     print(type(r))
 
 # def process_redis_data(filename):
 #     with open(filename, newline='') as f:
@@ -127,25 +128,28 @@ else:
         
 # '''
 
-# @app.route('/<filename>')
-# def display_results_page(filename):
-#     try:
-#         data_pairs, selection_html_elements = process_redis_data(filename)
+@app.route('/<filename>')
+def display_results_page(filename, width):
+    try:
+        with open(filename, newline='') as f:
+            reader = csv.reader(f)
+            data_pairs = [row for row in reader]
         
-#         DATA_PAIR_LIST = dm.DataPairList(data_pairs)
-#         pairs_formatted = DATA_PAIR_LIST.get_data_display('full')
-#         title = 'Interactive Record Linkage Results'
-#         data = list(zip(pairs_formatted[0::2], pairs_formatted[1::2]))
-#         ids_list = DATA_PAIR_LIST.get_ids()
-#         icons = DATA_PAIR_LIST.get_icons()[:(len(pairs_formatted) // 2)]
-#         ids = list(zip(ids_list[0::2], ids_list[1::2]))
+        DATA_PAIR_LIST = dm.DataPairList(data_pairs)
+        pairs_formatted = DATA_PAIR_LIST.get_data_display('full')
+        title = 'Interactive Record Linkage Results'
+        data = list(zip(pairs_formatted[0::2], pairs_formatted[1::2]))
+        ids_list = DATA_PAIR_LIST.get_ids()
+        icons = DATA_PAIR_LIST.get_icons()[:(len(pairs_formatted) // 2)]
+        ids = list(zip(ids_list[0::2], ids_list[1::2]))
+    except Exception as e:
+        return "Can not open invalidfffffff or nonexistent file {} {} {}".format(filename, e, os.getcwd()), 500
+    
+    print(width)
+    return render_template("base.html", data=data, ids=ids, title=title, icons=icons, width=width)
 
-#         return render_template("base.html", data=data, ids=ids, title=title, icons=icons, selections=selection_html_elements)
-#     except Exception as e:
-#         return "Can not open invalid or nonexistent file {} {} {}".format(filename, e), 500
-
-# def default_display():
-#     return display_results_page("data/ppirl.csv")
+def default_display(screen_width):
+    return display_results_page("data/ppirl.csv", screen_width)
 
 @app.route('/')
 def index():
@@ -154,12 +158,11 @@ def index():
 
 @app.route('/screen', methods=['POST'])
 def screen():
-    width = request.json.get('width')
+    screen_width = request.json.get('width')
+
     # Decide based on width
-    if width > 768:
-        return jsonify({'template': render_template('mobile.html')})
-    else:
-        return jsonify({'template': render_template('test.html')})
+    return jsonify({'template': default_display(screen_width)})
+    # return jsonify({'template': render_template('mobile.html')})
 
 @app.route('/<path:invalid_path>')
 def handle_bad_path(invalid_path):

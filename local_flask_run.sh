@@ -1,4 +1,4 @@
-cd /Users/jonathonlowe/Documents/Repositories/mindfirl-display_results
+cd /vidal/home/jonathonlowe/Documents/mindfirl/mindfirl-mobile-friendly
 source resultsEnv/bin/activate
 export FLASK_APP=app.py
 export FLASK_ENV=development
