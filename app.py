@@ -129,7 +129,7 @@ app = Flask(__name__)
 # '''
 
 @app.route('/<filename>')
-def display_results_page(filename, width):
+def display_results_page(filename, template_name):
     try:
         with open(filename, newline='') as f:
             reader = csv.reader(f)
@@ -143,10 +143,9 @@ def display_results_page(filename, width):
         icons = DATA_PAIR_LIST.get_icons()[:(len(pairs_formatted) // 2)]
         ids = list(zip(ids_list[0::2], ids_list[1::2]))
     except Exception as e:
-        return "Can not open invalidfffffff or nonexistent file {} {} {}".format(filename, e, os.getcwd()), 500
+        return "Can not open invalid or nonexistent file {} {} {}".format(filename, e, os.getcwd()), 500
     
-    print(width)
-    return render_template("base.html", data=data, ids=ids, title=title, icons=icons, width=width)
+    return render_template(template_name, data=data, ids=ids, title=title, icons=icons)
 
 def default_display(screen_width):
     return display_results_page("data/ppirl.csv", screen_width)
@@ -154,15 +153,23 @@ def default_display(screen_width):
 @app.route('/')
 def index():
     # Just serves the base page with JavaScript
-    return render_template('index.html')
+    return render_template('landing.html')
 
-@app.route('/screen', methods=['POST'])
-def screen():
-    screen_width = request.json.get('width')
+@app.route('/desktop')
+def desktop():
+    return display_results_page("data/ppirl.csv", "base.html")
 
-    # Decide based on width
-    return jsonify({'template': default_display(screen_width)})
-    # return jsonify({'template': render_template('mobile.html')})
+@app.route('/mobile')
+def mobile():
+    return display_results_page("data/ppirl.csv", "mobile.html")
+
+# @app.route('/screen', methods=['POST'])
+# def screen():
+#     screen_width = request.json.get('width')
+
+#     # Decide based on width
+#     return jsonify({'template': default_display(screen_width)})
+#     # return jsonify({'template': render_template('mobile.html')})
 
 @app.route('/<path:invalid_path>')
 def handle_bad_path(invalid_path):

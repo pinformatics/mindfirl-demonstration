@@ -1,7 +1,6 @@
-<div id="flex-row-wrapper">
-    <table style="width: 20vw; border: none; background-color: #ADD8E6">
+<div style="display: flex; flex-direction: row; height: 35vh;">
+    <table style="width: 20vw; border: none; background-color: #ADD8E6; margin-top: 5vh;">
         <tbody>
-          <tr><td><h3>Field</h3></td></tr>
           <tr><td><h3>ID</h3></td></tr>
           <tr><td><h3>FFreq</h3></td></tr>
           <tr><td><h3>First Name</h3></td></tr>
@@ -12,7 +11,7 @@
           <tr><td><h3>Race</h3></td></tr>
         </tbody>
       </table>
-    <div style="display: flex; flex-direction: column">  
+    <div style="display: flex; flex-direction: column; justify-content: first baseline">  
         <table id="mobile-table">
             <tbody>
             <tr>
@@ -108,7 +107,29 @@
                 </td>
                 {% endfor %}
             </tr>
+            <!-- <tr>
+                {% for r in data %}
+                {% set loop_index0 = loop.index0 %}
+                <td>
+                    {% include "choice_panel.html" %}
+                </td>
+                {% endfor %}
+            </tr> -->
             </tbody>
         </table>
     </div>
-</div>    
+</div>
+<!-- <div>
+    <table>
+        <tbody>
+            <tr>
+                {% for r in data[0] %}
+                {% set loop_index0 = loop.index0 %}
+                <td>
+                    {% include "choice_panel.html" %}
+                </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</div> -->

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Choose View</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        button {
+            padding: 15px 30px;
+            margin: 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=9999" type="text/css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/select.css') }}?v=9999" type="text/css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/results.css') }}" type="text/css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ionicons.min.css')}}" type="text/css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" type="text/css">
+</head>
+
+<body>
+    <h1>Select a View</h1>
+    <a href="{{ url_for('mobile') }}">
+        <button>Mobile View</button>
+    </a>
+    <a href="{{ url_for('desktop') }}">
+        <button>Desktop View</button>
+    </a>
+</body>
+</html>
