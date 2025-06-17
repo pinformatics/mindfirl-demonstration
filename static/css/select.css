@@ -11,15 +11,15 @@
 }
 
 .choice-label .fill {
-  width: 16.2px;
-  height: 23px;
+  width: 32.4px;
+  height: 46px;
 }
 
 .choice-label span {
   float: left;
-  width: 21.1px;
-  height: 23px;
-  font-size: 18px;
+  width: 42.2px;
+  height: 46px;
+  font-size: 36px;
   text-align: center;
 }
 
@@ -31,7 +31,7 @@
   display: inline-block; 
   padding: 0;
   margin: 0;
-  font-size: 26px;
+  font-size: 52px;
 }
 
 .mrate li {
@@ -45,12 +45,12 @@
 
 .choice-result {
   display: inline-block;
-  width: 250px;
+  width: 500px;
   list-style-type: none;
   text-align: center;
   padding: 0;
   margin: 0 15px 0 0;
-  font-size: 16px;
+  font-size: 32px;
 }
 
 .diff {

@@ -1,25 +1,25 @@
-<div style="display: flex; flex-direction: row; height: 35vh;">
-    <table style="width: 20vw; border: none; background-color: #ADD8E6; margin-top: 5vh;">
-        <tbody>
-          <tr><td><h3>ID</h3></td></tr>
-          <tr><td><h3>FFreq</h3></td></tr>
-          <tr><td><h3>First Name</h3></td></tr>
-          <tr><td><h3>Last Name</h3></td></tr>
-          <tr><td><h3>LFreq</h3></td></tr>
-          <tr><td><h3>DoB (M/D/Y)</h3></td></tr>
-          <tr><td><h3>Sex</h3></td></tr>
-          <tr><td><h3>Race</h3></td></tr>
-        </tbody>
-      </table>
-    <div style="display: flex; flex-direction: column; justify-content: first baseline">  
+<div style="display: flex; flex-direction: row; width: 80vw; margin-left: 8vw;">
+    <div style="display: flex; flex-direction: column; justify-content: flex-start;">
+        <table style="width: 20vw; border: none; background-color: #ADD8E6; margin-top: 5vh;">
+            <tbody>
+            <tr style="height: 115px;"><td style="height: 115px;"><h3>ID</h3></td></tr>
+            <tr style="height: 115px;"><td style="height: 115px;"><h3>FFreq</h3></td></tr>
+            <tr style="height: 115px;"><td style="height: 115px;"><h3>First Name</h3></td></tr>
+            <tr style="height: 115px;"><td style="height: 115px;"><h3>Last Name</h3></td></tr>
+            <tr style="height: 115px;"><td style="height: 115px;"><h3>LFreq</h3></td></tr>
+            <tr style="height: 115px;"><td style="height: 115px;"><h3>DoB (M/D/Y)</h3></td></tr>
+            <tr style="height: 115px;"><td style="height: 115px;"><h3>Sex</h3></td></tr>
+            <tr style="height: 115px;"><td style="height: 115px;"><h3>Race</h3></td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div style="display: flex; flex-direction: column; justify-content: flex-start; max-width: 66vw;">  
         <table id="mobile-table">
             <tbody>
             <tr>
-                <div class="table-wrapper table_row_odd">
-                    {% for r in data %}
-                    <td>Pair {{ loop.index }}</td>
-                    {% endfor %}
-                </div>
+                {% for r in data %}
+                <td class="table-wrapper table_row_odd">Pair {{ loop.index }}</td>
+                {% endfor %}
             </tr>
             <tr>
                 {% for r in data %}
@@ -107,29 +107,15 @@
                 </td>
                 {% endfor %}
             </tr>
-            <!-- <tr>
+            <tr>
                 {% for r in data %}
                 {% set loop_index0 = loop.index0 %}
                 <td>
                     {% include "choice_panel.html" %}
                 </td>
                 {% endfor %}
-            </tr> -->
+            </tr>
             </tbody>
         </table>
     </div>
 </div>
-<!-- <div>
-    <table>
-        <tbody>
-            <tr>
-                {% for r in data[0] %}
-                {% set loop_index0 = loop.index0 %}
-                <td>
-                    {% include "choice_panel.html" %}
-                </td>
-                {% endfor %}
-            </tr>
-        </tbody>
-    </table>
-</div> -->
