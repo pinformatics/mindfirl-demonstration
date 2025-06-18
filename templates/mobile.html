@@ -89,23 +89,20 @@ function paginateMobileTable() {
     let next, submitButton;
 
     function renderPage() {
-        rows.forEach(row => {
-            Array.from(row.cells).forEach((cell, i) => {
-                cell.style.display = (i >= currentPage * colsPerPage && i < (currentPage + 1) * colsPerPage)
-                    ? "table-cell"
-                    : "none";
-            });
+    rows.forEach(row => {
+        Array.from(row.cells).forEach((cell, i) => {
+            // Skip the first column (static row headers)
+            if (i === 0) return;
+
+            const shouldShow =
+                i >= currentPage * colsPerPage + 1 &&
+                i < (currentPage + 1) * colsPerPage + 1;
+
+            cell.style.display = shouldShow ? "table-cell" : "none";
         });
+    });
+}
 
-        const totalCols = rows[0]?.cells.length || 0;
-        const isLastPage = (currentPage + 1) * colsPerPage >= totalCols;
-
-        // Toggle button visibility
-        if (next && submitButton) {
-            next.style.display = isLastPage ? "none" : "inline-block";
-            submitButton.style.display = isLastPage ? "inline-block" : "none";
-        }
-    }
 
     function addControls() {
         const nav = document.createElement("div");

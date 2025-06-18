@@ -78,6 +78,12 @@ h6 {
     flex: 1;
 }
 
+.mobile-header {
+    width: 20vw;
+    background-color: #ADD8E6;
+    font-size: 2rem;
+}
+
 tr {
     height: 110px;
     line-height: 110px;

@@ -1,27 +1,15 @@
 <div style="display: flex; flex-direction: row; width: 80vw; margin-left: 8vw;">
-    <div style="display: flex; flex-direction: column; justify-content: flex-start;">
-        <table style="width: 20vw; border: none; background-color: #ADD8E6; margin-top: 5vh;">
-            <tbody>
-            <tr style="height: 115px;"><td style="height: 115px;"><h3>ID</h3></td></tr>
-            <tr style="height: 115px;"><td style="height: 115px;"><h3>FFreq</h3></td></tr>
-            <tr style="height: 115px;"><td style="height: 115px;"><h3>First Name</h3></td></tr>
-            <tr style="height: 115px;"><td style="height: 115px;"><h3>Last Name</h3></td></tr>
-            <tr style="height: 115px;"><td style="height: 115px;"><h3>LFreq</h3></td></tr>
-            <tr style="height: 115px;"><td style="height: 115px;"><h3>DoB (M/D/Y)</h3></td></tr>
-            <tr style="height: 115px;"><td style="height: 115px;"><h3>Sex</h3></td></tr>
-            <tr style="height: 115px;"><td style="height: 115px;"><h3>Race</h3></td></tr>
-            </tbody>
-        </table>
-    </div>
     <div style="display: flex; flex-direction: column; justify-content: flex-start; max-width: 66vw;">  
         <table id="mobile-table">
             <tbody>
             <tr>
+                <th></th>
                 {% for r in data %}
                 <td class="table-wrapper table_row_odd">Pair {{ loop.index }}/{{ data|length }}</td>
                 {% endfor %}
             </tr>
             <tr>
+                <th class="mobile-header">ID</th>
                 {% for r in data %}
                 <td>
                     <div class="table-wrapper table_row_even">
@@ -33,6 +21,7 @@
                 {% endfor %}
             </tr>
             <tr>
+                <th class="mobile-header">FFreq</th>
                 {% for r in data %}
                 <td>
                     <div class="table-wrapper table_row_odd">
@@ -43,6 +32,7 @@
                 {% endfor %}
             </tr>
             <tr>
+                <th class="mobile-header">First Name</th>
                 {% for r in data %}
                 <td>
                     <div class="table-wrapper table_row_even">
@@ -54,6 +44,7 @@
                 {% endfor %}
             </tr>
             <tr>
+                <th class="mobile-header">Last Name</th>
                 {% for r in data %}
                 <td>
                     <div class="table-wrapper table_row_odd">
@@ -65,6 +56,7 @@
                 {% endfor %}
             </tr>
             <tr>
+                <th class="mobile-header">LFreq</th>
                 {% for r in data %}
                 <td>
                     <div class="table-wrapper table_row_even">
@@ -75,6 +67,7 @@
                 {% endfor %}
             </tr>
             <tr>
+                <th class="mobile-header">Date of Birth (M/D/Y)</th>
                 {% for r in data %}
                 <td>
                     <div class="table-wrapper table_row_odd">
@@ -86,6 +79,7 @@
                 {% endfor %}
             </tr>
             <tr>
+                <th class="mobile-header">Sex</th>
                 {% for r in data %}
                 <td>
                     <div class="table-wrapper table_row_even">
@@ -97,6 +91,7 @@
                 {% endfor %}
             </tr>
             <tr>
+                <th class="mobile-header">Race</th>
                 {% for r in data %}
                 <td>
                     <div class="table-wrapper table_row_odd">
@@ -108,6 +103,7 @@
                 {% endfor %}
             </tr>
             <tr>
+                <th></th>
                 {% for r in data %}
                 {% set loop_index0 = loop.index0 %}
                 <td>
