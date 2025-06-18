@@ -66,6 +66,18 @@ h6 {
     /* overflow: hidden; */
 }
 
+#expandSection {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 0.4s ease, max-height 0.4s ease;
+}
+
+#expandSection.visible {
+  opacity: 1;
+  max-height: 500px; /* adjust based on your content */
+}
+
 .table-wrapper {
     display: flex;
     flex-direction: row;
@@ -79,8 +91,17 @@ h6 {
 }
 
 tr {
+    display: flex;
     height: 110px;
     line-height: 110px;
+}
+
+.sticky-col {
+    position: sticky;
+    width: 20vw;
+    left: 0;
+    background-color: #ADD8E6;
+    z-index: 2;
 }
 
 #table_head {
@@ -159,9 +180,9 @@ tr {
 }
 
 #column-pagination-controls {
-    height: 8vh;
-    width: 20vw;
+    display: flex;
     font-size: 2.4rem;
+    justify-content: space-between;
 }
 
 #table_content {
@@ -302,6 +323,7 @@ input[type="radio"] {
     align-items: center;
     font-size: 2.4rem;
     cursor: pointer;
+    margin-top: 15vh;
 }
 
 .clickable_cell {
