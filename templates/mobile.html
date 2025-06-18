@@ -21,14 +21,23 @@
                 <h3>{{ title }}</h3>
             </div>
         </div>
-        <div style="height: 80vh; margin-bottom: 15vh;">
+        <div style="min-height: 80vh; margin-bottom: 15vh;">
             {% include "mobile_table.html" %}
         </div>
-    </body>
         <br />
         <br />
-    <body>
     
+<form>
+    <button
+        type="submit"
+        id="submit_button"
+        class="submit-button"
+        style="margin-left: 45%;"
+        disabled
+    >
+        Submit
+    </button>
+</form>
 
 <!-- <div style="clear:both"></div> -->
     <div id="content" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; padding: 20px;max-width: 80vw; min-height: 20vh;">
@@ -105,13 +114,11 @@ function paginateMobileTable() {
 
 
     function addControls() {
+        console.log("test1")
         const nav = document.createElement("div");
         nav.id = "column-pagination-controls";
 
-        submitButton = document.createElement("button");
-        submitButton.textContent = "Submit";
-        submitButton.classList.add("submit-button");
-        submitButton.style.display = "none"; // hidden initially
+        const submitButton = document.getElementById("submit_button");
 
         const prev = document.createElement("button");
         prev.textContent = "Prev";
@@ -119,10 +126,11 @@ function paginateMobileTable() {
             if (currentPage > 0) {
                 currentPage--;
                 renderPage();
+                submitButton.disabled = true; // ⬅️ Disable submit when moving back
             }
         };
 
-        next = document.createElement("button");
+        const next = document.createElement("button");
         next.textContent = "Next";
         next.onclick = () => {
             const totalCols = rows[0]?.cells.length || 0;
@@ -130,13 +138,17 @@ function paginateMobileTable() {
                 currentPage++;
                 renderPage();
             }
+
+            if ((currentPage + 1) * colsPerPage === totalCols) {
+                submitButton.disabled = false; // ⬅️ Enable submit on last page
+            }
         };
 
         nav.appendChild(prev);
         nav.appendChild(next);
-        nav.appendChild(submitButton);
         table.parentElement.appendChild(nav);
     }
+
 
     renderPage();
     addControls();
