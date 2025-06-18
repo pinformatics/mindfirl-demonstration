@@ -137,7 +137,7 @@ def display_results_page(filename, template_name):
         
         DATA_PAIR_LIST = dm.DataPairList(data_pairs)
         pairs_formatted = DATA_PAIR_LIST.get_data_display('full')
-        title = 'Interactive Record Linkage Results'
+        title = 'Interactive Record Linkage'
         data = list(zip(pairs_formatted[0::2], pairs_formatted[1::2]))
         ids_list = DATA_PAIR_LIST.get_ids()
         icons = DATA_PAIR_LIST.get_icons()[:(len(pairs_formatted) // 2)]

@@ -21,6 +21,13 @@
                 <h3>{{ title }}</h3>
             </div>
         </div>
+        <div style="height: 80vh; margin-bottom: 15vh;">
+            {% include "mobile_table.html" %}
+        </div>
+    </body>
+        <br />
+        <br />
+    <body>
     
 
 <!-- <div style="clear:both"></div> -->
@@ -58,18 +65,7 @@
             </div>
         </div>
     </div>
-    </body>
-    <body>
-        <div style="height: 80vh;">
-            {% include "mobile_table.html" %}
-        </div>
-    </body>
-        <br />
-        <br />
-    <body>
-        <form> 
-            <button class="submit-button" id="submit_button" style="margin-left: 45%" disabled>Submit</button>
-        </form>
+
         <div id="footer_filler"></div>
         <footer class="footer">
             <div class="container">
@@ -80,63 +76,76 @@
         <!-- JS goes at the bottom for performance -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                paginateMobileTable();
+document.addEventListener("DOMContentLoaded", function () {
+    paginateMobileTable();
+});
+
+function paginateMobileTable() {
+    const table = document.getElementById("mobile-table");
+    const rows = Array.from(table.rows);
+    const colsPerPage = 1;
+    let currentPage = 0;
+
+    let next, submitButton;
+
+    function renderPage() {
+        rows.forEach(row => {
+            Array.from(row.cells).forEach((cell, i) => {
+                cell.style.display = (i >= currentPage * colsPerPage && i < (currentPage + 1) * colsPerPage)
+                    ? "table-cell"
+                    : "none";
             });
-    
-            function paginateMobileTable() {
-                const table = document.getElementById("mobile-table");
-                const rows = Array.from(table.rows);
-                const colsPerPage = 1;
-                let currentPage = 0;
-    
-                function renderPage() {
-                    rows.forEach(row => {
-                        Array.from(row.cells).forEach((cell, i) => {
-                            cell.style.display = (i >= currentPage * colsPerPage && i < (currentPage + 1) * colsPerPage)
-                                ? "table-cell"
-                                : "none";
-                        });
-                    });
-                }
-    
-                function addControls() {
-                    const nav = document.createElement("div");
-                    nav.id = "column-pagination-controls";
+        });
 
-                    const submitButton = document.getElementById("submit_button")
-                    const prev = document.createElement("button");
-                    prev.textContent = "Prev";
-                    prev.onclick = () => {
-                        if (currentPage > 0) {
-                            currentPage--;
-                            renderPage();
-                        }
-                    };
-    
-                    const next = document.createElement("button");
-                    next.textContent = "Next";
-                    next.onclick = () => {
-                        const totalCols = rows[0]?.cells.length || 0;
-                        if ((currentPage + 1) * colsPerPage < totalCols) {
-                            currentPage++;
-                            renderPage();
-                        }
+        const totalCols = rows[0]?.cells.length || 0;
+        const isLastPage = (currentPage + 1) * colsPerPage >= totalCols;
 
-                        if((currentPage + 1) * colsPerPage == totalCols) {
-                            submitButton.disabled = false;
-                        }
-                    };
-    
-                    nav.appendChild(prev);
-                    nav.appendChild(next);
-                    table.parentElement.appendChild(nav);
-                }
-    
+        // Toggle button visibility
+        if (next && submitButton) {
+            next.style.display = isLastPage ? "none" : "inline-block";
+            submitButton.style.display = isLastPage ? "inline-block" : "none";
+        }
+    }
+
+    function addControls() {
+        const nav = document.createElement("div");
+        nav.id = "column-pagination-controls";
+
+        submitButton = document.createElement("button");
+        submitButton.textContent = "Submit";
+        submitButton.classList.add("submit-button");
+        submitButton.style.display = "none"; // hidden initially
+
+        const prev = document.createElement("button");
+        prev.textContent = "Prev";
+        prev.onclick = () => {
+            if (currentPage > 0) {
+                currentPage--;
                 renderPage();
-                addControls();
             }
-        </script>
+        };
+
+        next = document.createElement("button");
+        next.textContent = "Next";
+        next.onclick = () => {
+            const totalCols = rows[0]?.cells.length || 0;
+            if ((currentPage + 1) * colsPerPage < totalCols) {
+                currentPage++;
+                renderPage();
+            }
+        };
+
+        nav.appendChild(prev);
+        nav.appendChild(next);
+        nav.appendChild(submitButton);
+        table.parentElement.appendChild(nav);
+    }
+
+    renderPage();
+    addControls();
+}
+</script>
+
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="{{ url_for('static', filename='javascript/choice_panel.js') }}"></script>
     </body>

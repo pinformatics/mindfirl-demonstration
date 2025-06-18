@@ -159,9 +159,9 @@ tr {
 }
 
 #column-pagination-controls {
-    height: 8vh;
-    width: 20vw;
+    display: flex;
     font-size: 2.4rem;
+    justify-content: space-between;
 }
 
 #table_content {
@@ -302,6 +302,7 @@ input[type="radio"] {
     align-items: center;
     font-size: 2.4rem;
     cursor: pointer;
+    margin-top: 15vh;
 }
 
 .clickable_cell {

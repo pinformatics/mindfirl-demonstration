@@ -18,7 +18,7 @@
             <tbody>
             <tr>
                 {% for r in data %}
-                <td class="table-wrapper table_row_odd">Pair {{ loop.index }}</td>
+                <td class="table-wrapper table_row_odd">Pair {{ loop.index }}/{{ data|length }}</td>
                 {% endfor %}
             </tr>
             <tr>
