@@ -2,6 +2,10 @@
     stylesheet for the record linkage page.
 */
 
+.landing-button {
+    padding: 12px 24px; font-size: 1em; border: none; background-color: #007BFF; color: white; border-radius: 6px; cursor: pointer;
+}
+
 html {
     height: 100%
 }
@@ -28,10 +32,15 @@ body {
 }
 
 #title{
-    width: 95vw;
+    width: 68vw;
     font-size: 36px;
     text-align: center;
     margin-bottom: 5px;
+}
+
+h2 {
+    font-size: 36px;
+    margin-bottom: 0px;
 }
 
 h3 {
@@ -79,9 +88,10 @@ h6 {
 }
 
 .mobile-header {
-    width: 28vw;
+    width: 22vw;
     background-color: #ADD8E6;
     font-size: 2rem;
+    padding-left: .75vw;
 }
 
 tr {
@@ -168,6 +178,8 @@ tr {
     display: flex;
     font-size: 2.4rem;
     justify-content: space-between;
+    width: 60vw;
+    margin-left: 20vw;
 }
 
 #table_content {
@@ -400,6 +412,9 @@ select {
   left: 0;
 }
 
+.footer-container {
+    width: 100vw;
+}
 
 .email_hover{
     color: #772233;

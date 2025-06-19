@@ -24,13 +24,37 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" type="text/css">
 </head>
 
-<body>
+<!-- <body>
     <h1>Select a View</h1>
-    <a href="{{ url_for('mobile') }}">
-        <button>Mobile View</button>
-    </a>
-    <a href="{{ url_for('desktop') }}">
-        <button>Desktop View</button>
-    </a>
+    <div>
+        <a href="{{ url_for('mobile') }}">
+            <button class="landing-button">Mobile View</button>
+        </a>
+    </div>
+    <div>
+        <a href="{{ url_for('desktop') }}">
+            <button class="landing-button">Desktop View</button>
+        </a>
+    </div>
+</body> -->
+<body style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; background-color: #f9f9f9;">
+    <h1 style="margin-bottom: 40px; font-size: 2em; color: #333;">Select a View</h1>
+    
+    <div style="margin: 10px;">
+        <a href="{{ url_for('mobile') }}">
+            <button class="landing-button">
+                Mobile View
+            </button>
+        </a>
+    </div>
+
+    <div style="margin: 10px;">
+        <a href="{{ url_for('desktop') }}">
+            <button class="landing-button">
+                Desktop View
+            </button>
+        </a>
+    </div>
 </body>
+
 </html>
