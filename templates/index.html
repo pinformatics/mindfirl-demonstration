@@ -12,8 +12,6 @@
     <script>
         function handleResize() {
             const screenWidth = window.innerWidth;
-
-            console.log(screenWidth)
             fetch("/screen", {
                 method: "POST",
                 headers: {

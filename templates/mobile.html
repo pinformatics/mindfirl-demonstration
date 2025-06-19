@@ -102,10 +102,6 @@ function paginateMobileTable() {
         const totalCols = rows[0]?.cells.length - 1 || 0;
         const isLastPage = (currentPage + 1) * colsPerPage >= totalCols;
 
-        console.log(">FDFD>>????");
-        console.log(currentPage)
-        console.log(isLastPage)
-        console.log("3333333");
         // Toggle button visibility
         if (next && submitButton) {
             next.style.display = isLastPage ? "none" : "inline-block";
@@ -115,7 +111,6 @@ function paginateMobileTable() {
 
 
     function addControls() {
-        console.log("test1")
         const nav = document.createElement("div");
         nav.id = "column-pagination-controls";
 
@@ -137,16 +132,13 @@ function paginateMobileTable() {
         next = document.createElement("button");
         next.textContent = "Next";
         next.onclick = () => {
-            console.log(currentPage)
             const totalCols = rows[0]?.cells.length - 1 || 0;
-            console.log(totalCols)
             if ((currentPage + 1) * colsPerPage < totalCols) {
                 currentPage++;
                 renderPage();
             }
 
             if ((currentPage + 1) * colsPerPage === totalCols) {
-                console.log("ACTIVATE")
                 submitButton.disabled = false; // ⬅️ Enable submit on last page
             }
         };

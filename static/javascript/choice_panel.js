@@ -7,7 +7,6 @@
 
 $(document).ready(function(){
     $(document).on("click", "li.input_radio", function(e) {
-        console.log('clickityclick')
         e.preventDefault();
         e.stopPropagation();
         $(this).parent().find("li.input_radio").removeClass("ion-android-radio-button-on");
@@ -15,7 +14,6 @@ $(document).ready(function(){
         $(this).removeClass("ion-android-radio-button-off");
         $(this).addClass("ion-android-radio-button-on");
         var $selected_id = $(this).attr("id");
-        console.log($selected_id)
         var $diff = $(this).parent().parent().find("li.diff");
         var $same = $(this).parent().parent().find("li.same");
         if($selected_id.indexOf("a1") > 0 || $selected_id.indexOf("a2") > 0 || $selected_id.indexOf("a3") > 0) {
@@ -33,17 +31,21 @@ $(document).ready(function(){
             body: JSON.stringify({'id': $selected_id})
 
         })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("fff");
+            }
+            return response.json();
+        })
     });
 })
 
 
 $(document).ready(function() {
     var $options = $(".submit-button");
-    console.log("at least it ran")
 
     $options.click(function(e) {
         e.preventDefault()
-        console.log("submit selections")
         fetch('/submit_selections', {
             method: 'POST',
             credentials: 'same-origin'
