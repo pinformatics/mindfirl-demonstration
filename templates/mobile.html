@@ -19,7 +19,7 @@
         <div style="display: flex; justify-content: flex-start; margin-top: 3vh; width: 100vw;">
             <img src="{{ url_for('static', filename='images/site/population_informatics_icon.png')}}">
             <div id="title">
-                <h2>{{ title }}</h2>
+                <h2>{{ title }}<span id="title-suffix"></span></h2>
             </div>
         </div>
         <div style="margin-bottom: 8vh; margin-top: 3vh;">
@@ -90,11 +90,13 @@ function paginateMobileTable() {
 
     function updatePairCounter(rows, currentPage, colsPerPage) {
         const pairCounter = document.getElementById("pair-counter");
+        const pairCounterClone = document.getElementById("pair-counter-clone");
         if (!pairCounter) return;
 
         const totalCols = rows[0]?.cells.length - 1 || 0;
         const totalPages = Math.ceil(totalCols / colsPerPage);
-        pairCounter.textContent = `Pair ${currentPage + 1} / ${totalPages}`;
+        pairCounter.textContent = `${currentPage + 1} / ${totalPages}`;
+        pairCounterClone.textContent = `(Pair ${currentPage + 1} / ${totalPages})`;
     }
 
 
@@ -162,6 +164,11 @@ function paginateMobileTable() {
         pairSpan.id = "pair-counter";
         pairSpan.style.margin = "0 10px";
         pairSpan.style.fontWeight = "bold";
+
+        const pairSpanClone = pairSpan.cloneNode(true);
+        const titleSuffix = document.getElementById("title-suffix");
+        pairSpanClone.id = "pair-counter-clone";
+        titleSuffix.append(pairSpanClone);
 
         nav.appendChild(prev);
         nav.appendChild(pairSpan)
