@@ -19,10 +19,10 @@
         <div style="display: flex; justify-content: flex-start; margin-top: 3vh; width: 100vw;">
             <img src="{{ url_for('static', filename='images/site/population_informatics_icon.png')}}">
             <div id="title">
-                <h2>{{ title }}</h2>
+                <h2>{{ title }}<span id="title-suffix"></span></h2>
             </div>
         </div>
-        <div style="margin-bottom: 8vh;">
+        <div style="margin-bottom: 8vh; margin-top: 3vh;">
             {% include "mobile_table.html" %}
         </div>
         <br />
@@ -88,6 +88,18 @@ function paginateMobileTable() {
 
     let next, submitButton;
 
+    function updatePairCounter(rows, currentPage, colsPerPage) {
+        const pairCounter = document.getElementById("pair-counter");
+        const pairCounterClone = document.getElementById("pair-counter-clone");
+        if (!pairCounter) return;
+
+        const totalCols = rows[0]?.cells.length - 1 || 0;
+        const totalPages = Math.ceil(totalCols / colsPerPage);
+        pairCounter.textContent = `${currentPage + 1} / ${totalPages}`;
+        pairCounterClone.textContent = `(Pair ${currentPage + 1} / ${totalPages})`;
+    }
+
+
     function renderPage() {
         rows.forEach(row => {
             Array.from(row.cells).forEach((cell, i) => {
@@ -110,8 +122,9 @@ function paginateMobileTable() {
             next.style.display = isLastPage ? "none" : "inline-block";
             submitButton.style.display = isLastPage ? "inline-block" : "none";
         }
-    }
 
+        updatePairCounter(rows, currentPage, colsPerPage);
+    }
 
     function addControls() {
         const nav = document.createElement("div");
@@ -146,12 +159,25 @@ function paginateMobileTable() {
             }
         };
 
+        // ✅ Create the span to show "Pair X / Y"
+        const pairSpan = document.createElement("span");
+        pairSpan.id = "pair-counter";
+        pairSpan.style.margin = "0 10px";
+        pairSpan.style.fontWeight = "bold";
+
+        const pairSpanClone = pairSpan.cloneNode(true);
+        const titleSuffix = document.getElementById("title-suffix");
+        pairSpanClone.id = "pair-counter-clone";
+        titleSuffix.append(pairSpanClone);
+
         nav.appendChild(prev);
+        nav.appendChild(pairSpan)
         nav.appendChild(next);
         nav.appendChild(submitButton);
         table.parentElement.appendChild(nav);
-    }
 
+        updatePairCounter(rows, currentPage, colsPerPage);
+    }
 
     renderPage();
     addControls();

@@ -51,8 +51,8 @@ $(document).ready(function() {
             credentials: 'same-origin'
         })
         .then(response => {
-            alert("Thank you for participating! Your submissions have been recorded. If you " + 
-                "would like to change your submissions, you may do so and then resubmit anytime.")
+            alert("Thank you for participating! Your submissions have been recorded. " + 
+                "If you would like to change your submissions, you may do so and then resubmit anytime.")
         })
         .catch(error => {
             // handle error here
