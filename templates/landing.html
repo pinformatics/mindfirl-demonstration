@@ -55,6 +55,11 @@
             </button>
         </a>
     </div>
+    <p>Click below to go to the admin page.</p>
+    <form action="{{ url_for('admin_page') }}">
+        <input type="password" name="password" placeholder="Admin password" required>
+        <button type="submit">View Redis Data</button>
+    </form>
 </body>
 
 </html>
