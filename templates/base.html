@@ -5,7 +5,7 @@
         <title>IRL</title>
 
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=9999" type="text/css">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/select.css') }}?v=9999" type="text/css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/select_standard.css') }}?v=9999" type="text/css">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/results.css') }}" type="text/css">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/ionicons.min.css')}}" type="text/css">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" type="text/css">
@@ -15,9 +15,16 @@
 
     <body id="wrapper">
         <div style="display: flex">
-            <img src="{{ url_for('static', filename='images/site/population_informatics_icon.png') }}">
+            <img src="{{ url_for('static', filename='images/site/population_informatics_icon.png') }}" style="width: 260px;">
             <div id="title">
                 <h3>{{ title }}</h3>
+            </div>
+            <div style="margin: 10px;">
+                <a href="{{ url_for('index') }}">
+                    <button class="landing-button">
+                        Home
+                    </button>
+                </a>
             </div>
         </div>
     </body>   

@@ -44,7 +44,7 @@ DATA_PAIR_LIST = None
 flag = False
 user_selections = None
 
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", None)
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "backuppassword")
 
 same_different = {
     "1": "Different",
@@ -69,15 +69,16 @@ def admin_required(f):
     def decorated_function(*args, **kwargs):
         if request.form.get('password') != ADMIN_PASSWORD and request.args.get('password') != ADMIN_PASSWORD:
             return "Unauthorized access. Please provide the correct admin password.", 403
+        print(ADMIN_PASSWORD)
         return f(*args, **kwargs)
     return decorated_function
 
 @app.route('/admin')
+@admin_required
 def admin_page():
     return render_template('admin.html')
 
 @app.route('/admin/download_redis_data', methods=['POST'])
-@admin_required
 def generate_redis_csv():
     csv_contents = []
     keys = list(r.scan_iter())
@@ -106,7 +107,6 @@ def generate_redis_csv():
     )
     
 @app.route('/admin/clear_redis', methods=['POST'])
-@admin_required
 def clear_redis():
     try:
         r.flushall()
@@ -115,7 +115,6 @@ def clear_redis():
         return "Error clearing Redis: {0}".format(str(e)), 500
 
 @app.route('/admin/view_all_redis_data', methods=['GET'])
-@admin_required
 def view_all_redis_data():
     try:
         ret = '<h1>All Stored Data in Redis</h1>'
