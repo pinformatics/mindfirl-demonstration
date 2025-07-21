@@ -3,52 +3,37 @@
     <head>
         <meta charset="utf-8">
         <title>IRL</title>
-
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=9999" type="text/css">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/select_standard.css') }}?v=9999" type="text/css">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/results.css') }}" type="text/css">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/ionicons.min.css')}}" type="text/css">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" type="text/css">
-        <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
-
     </head>
 
     <body id="wrapper">
         <div style="display: flex">
-            <img src="{{ url_for('static', filename='images/site/population_informatics_icon.png') }}" style="width: 260px;">
+            <img src="{{ url_for('static', filename='images/site/population_informatics_icon.png') }}">
             <div id="title">
                 <h3>{{ title }}</h3>
-            </div>
-            <div style="margin: 10px;">
-                <a href="{{ url_for('index') }}">
-                    <button class="landing-button">
-                        Home
-                    </button>
-                </a>
             </div>
         </div>
     </body>   
     <body id="wrapper">
-        {% include "header.html" %}
+        {% include "results_header.html" %}
     </body>
     <body>
         <div id="flex-row-wrapper">
-            {% include "table.html" %}
+            {% include "results_table.html" %}
+            {% include "results.html" %}
         </div>
     </body>
     <br />
     <br />
     <body>
-        <form> 
-            <button class="submit-button" style="margin-left: 45%">Submit</button>
-        </form>
         <div id="footer_filler"></div>
         <footer class="footer">
             <div class="container">
                 <span class="text-muted">Copyright © 2017 • Population Informatics Lab • Texas A&M University</span>
             </div>
         </footer>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{{ url_for('static', filename='javascript/choice_panel.js') }}"></script>
     </body>
 </html>

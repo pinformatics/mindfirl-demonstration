@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head><title>Download Redis CSV</title></head>
+<body>
+    <div style="display: flex; justify-content: flex-start; margin-top: 3vh; width: 100vw;">
+        <div style="margin: 10px;">
+            <a href="{{ url_for('index') }}">
+                <button class="landing-button">
+                    Home
+                </button>
+            </a>
+        </div>
+    </div>
+    <h1>Admin Tools</h1>
+    <p>Click below to view the results.</p>
+    <form action="{{ url_for('results_template') }}" method="get">
+        <button type="submit">See Results</button>
+    </form>
+    <p>Click below to download the Redis data.</p>
+    <form action="{{ url_for('generate_redis_csv') }}" method="post">
+        <button type="submit">Download CSV</button>
+    </form>
+    <p>Click below to clear the Redis data. This is irreversible!</p>
+    <form action="{{ url_for('clear_redis') }}" method="post">
+        <button type="submit">Clear Redis Data</button>
+    </form>
+    <p>Click below to view the raw Redis data.</p>
+    <form action="{{ url_for('view_all_redis_data') }}" method="get">
+        <button type="submit">View Redis Data</button>
+    </form>
+</body>
+</html>
