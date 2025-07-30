@@ -257,6 +257,47 @@ def process_redis_data(filename):
 def favicon():
     return '', 204  # No Content
 
+
+
+# global DATA_PAIR_LIST, data_pairs, flag
+#     mode = mode or request.args.get('mode', 'PPIRL')
+
+#     if not flag:
+#         data_pairs = dl.load_data_from_csv('data/ppirl.csv')
+#         DATA_PAIR_LIST = dm.DataPairList(data_pairs)
+#         session['current_filename'] = 'ppirl.csv'
+#         session['is_custom'] = False
+
+#     if mode == 'CDIRL':
+#         pairs_formatted = DATA_PAIR_LIST.get_data_display('full')
+#         for index in range(0, len(pairs_formatted)):
+#             if index < len(data_pairs):
+#                 pairs_formatted[index] = data_pairs[index][:9]
+#         title = 'Complete Data Interactive Record Linkage (CDIRL)'
+#     else:
+#         pairs_formatted = DATA_PAIR_LIST.get_data_display('masked')
+#         title = 'Privacy Preserving Interactive Record Linkage (PPIRL)'
+
+#     data = zip(pairs_formatted[0::2], pairs_formatted[1::2])
+#     M = len(data_pairs)
+#     num_pairs = len(pairs_formatted) // 2
+#     icons = DATA_PAIR_LIST.get_icons()[:num_pairs]
+#     ids_list = DATA_PAIR_LIST.get_ids()
+#     ids = zip(ids_list[0::2], ids_list[1::2])
+
+#     for id1 in ids_list:
+#         for i in range(6):
+#             key = session['user_cookie'] + '-' + id1[i]
+#             r.set(key, 'F' if mode == 'CDIRL' else 'M')
+
+#     delta = []
+#     delta_cdp = []
+#     if mode == 'PPIRL':
+#         for i in range(num_pairs):
+#             data_pair = DATA_PAIR_LIST.get_data_pair_by_index(i)
+#             delta += dm.KAPR_delta(DATASET, data_pair, ['M', 'M', 'M', 'M', 'M', 'M'], M)
+#             delta_cdp += dm.cdp_delta(data_pair, ['M', 'M', 'M', 'M', 'M', 'M'], 0, total_characters)
+
 @app.route('/<filename>')
 def display_results_page(filename, template_name):
     global user_selections
@@ -272,7 +313,7 @@ def display_results_page(filename, template_name):
             data_pairs = [row for row in reader]
         
         DATA_PAIR_LIST = dm.DataPairList(data_pairs)
-        pairs_formatted = DATA_PAIR_LIST.get_data_display('full')
+        pairs_formatted = DATA_PAIR_LIST.get_data_display('masked')
         title = 'Interactive Record Linkage'
         data = list(zip(pairs_formatted[0::2], pairs_formatted[1::2]))
         ids_list = DATA_PAIR_LIST.get_ids()
@@ -296,11 +337,11 @@ def index():
 
 @app.route('/desktop')
 def desktop():
-    return display_results_page("data/ppirl.csv", "base.html")
+    return display_results_page("data/ppirl.csv", "desktop_privacypreserving/base_privacy.html")
 
 @app.route('/mobile')
 def mobile():
-    return display_results_page("data/ppirl.csv", "mobile.html")
+    return display_results_page("data/ppirl.csv", "mobile_base/mobile.html")
 
 @app.route('/admin/results')
 def results_template():
@@ -316,7 +357,7 @@ def results_template():
         icons = DATA_PAIR_LIST.get_icons()[:(len(pairs_formatted) // 2)]
         ids = list(zip(ids_list[0::2], ids_list[1::2]))
 
-        return render_template("results_base.html", data=data, ids=ids, title=title, icons=icons, results_selections=selection_html_elements)
+        return render_template("desktop_base/results_base.html", data=data, ids=ids, title=title, icons=icons, results_selections=selection_html_elements)
     except Exception as e:
         return "Can not open invalid or nonexistent file {} {} {}".format(filename, e), 500
 
@@ -341,6 +382,82 @@ def submit_selections():
     r.set("id:" + user_id + "___file:" + data_path, ','.join(user_selections))
     return jsonify(success=True)
 
+@app.route('/get_cell', methods=['GET', 'POST'])
+def open_cell():
+    id1 = request.args.get('id1')
+    id2 = request.args.get('id2')
+    mode = request.args.get('mode')
+
+    pair_num = str(id1.split('-')[0])
+    attr_num = str(id1.split('-')[2])
+
+    pair_id = int(pair_num)
+    attr_id = int(attr_num)
+
+    pair = DATA_PAIR_LIST.get_data_pair(pair_id)
+    attr = pair.get_attributes(attr_id)
+    attr1 = attr[0]
+    attr2 = attr[1]
+    helper = pair.get_helpers(attr_id)
+    helper1 = helper[0]
+    helper2 = helper[1]
+
+    if mode == 'CDIRL':
+        return jsonify({"value1": attr1, "value2": attr2, "mode": "full"})
+
+    attr_display_next = pair.get_next_display(attr_id=attr_id, attr_mode=mode)
+    ret = {"value1": attr_display_next[1][0], "value2": attr_display_next[1][1], "mode": attr_display_next[0]}
+
+    cdp_previous = pair.get_character_disclosed_num(1, attr_id, mode) + pair.get_character_disclosed_num(2, attr_id, mode)
+    cdp_post = pair.get_character_disclosed_num(1, attr_id, ret['mode']) + pair.get_character_disclosed_num(2, attr_id, ret['mode'])
+    cdp_increment = cdp_post - cdp_previous
+
+    mindfil_disclosed_characters_key = session['user_cookie'] + '_mindfil_disclosed_characters'
+    r.incrby(mindfil_disclosed_characters_key, cdp_increment)
+    mindfil_total_characters_key = session['user_cookie'] + '_mindfil_total_characters'
+    cdp = 100.0 * int(r.get(mindfil_disclosed_characters_key)) / int(r.get(mindfil_total_characters_key))
+    ret['cdp'] = round(cdp, 1)
+
+    old_display_status1 = []
+    old_display_status2 = []
+    key1_prefix = session['user_cookie'] + '-' + pair_num + '-1-'
+    key2_prefix = session['user_cookie'] + '-' + pair_num + '-2-'
+    for attr_i in range(6):
+        old_display_status1.append(r.get(key1_prefix + str(attr_i)))
+        old_display_status2.append(r.get(key2_prefix + str(attr_i)))
+
+    key1 = session['user_cookie'] + '-' + pair_num + '-1-' + attr_num
+    key2 = session['user_cookie'] + '-' + pair_num + '-2-' + attr_num
+    if ret['mode'] == 'full':
+        r.set(key1, 'F')
+        r.set(key2, 'F')
+    elif ret['mode'] == 'partial':
+        r.set(key1, 'P')
+        r.set(key2, 'P')
+    else:
+        pass
+
+    display_status1 = []
+    display_status2 = []
+    for attr_i in range(6):
+        display_status1.append(r.get(key1_prefix + str(attr_i)))
+        display_status2.append(r.get(key2_prefix + str(attr_i)))
+    M = len(data_pairs)
+    old_KAPR = dm.get_KAPR_for_dp(DATASET, pair, old_display_status1, M)
+    KAPR = dm.get_KAPR_for_dp(DATASET, pair, display_status1, M)
+    KAPRINC = KAPR - old_KAPR
+    KAPR_key = session['user_cookie'] + '_KAPR'
+    overall_KAPR = float(r.get(KAPR_key) or 0)
+    overall_KAPR += KAPRINC
+    r.incrbyfloat(KAPR_key, KAPRINC)
+    ret['KAPR'] = round(100 * overall_KAPR, 1)
+
+    new_delta_list = dm.KAPR_delta(DATASET, pair, display_status1, M)
+    ret['new_delta'] = new_delta_list
+    new_delta_cdp_list = dm.cdp_delta(pair, display_status1, int(r.get(mindfil_disclosed_characters_key)), int(r.get(mindfil_total_characters_key)))
+    ret['new_delta_cdp'] = new_delta_cdp_list
+
+    return jsonify(ret)
 # @app.route('/screen', methods=['POST'])
 # def screen():
 #     screen_width = request.json.get('width')

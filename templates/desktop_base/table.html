@@ -21,7 +21,7 @@
             <div class="table_row table_row_odd">
                 {% endif %}
                 <div class="table_col1 pair_number">{{ loop.index }}</div>
-                <div class="table_col2" id = "test_col">
+                <div class="table_col2 clickable_cell" id = "test_col" mode="masked">
                     <div class="sub_row1" id="{{ ids[loop.index0][0][0] }}">
                         {{ r[0][1]|safe }}
                     </div>
