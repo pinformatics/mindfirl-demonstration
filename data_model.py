@@ -312,7 +312,7 @@ class DataPairList(object):
                 logging.error('Error: inconsistent pair number.')
             self._data.append(DataPair(data_pairs[i], data_pairs[i+1]))
             pair_num = int(data_pairs[i][0])
-            location = i/2
+            location = i // 2
             self._id_hash[pair_num] = location
 
 

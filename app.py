@@ -129,9 +129,14 @@ def view_all_redis_data():
     
 
 def process_redis_data(filename):
+    global DATASET, data_pairs
     with open(filename, newline='') as f:
         reader = csv.reader(f)
         data_pairs = [row for row in reader]
+
+    with open("data/section2.csv", newline='') as f:
+        reader = csv.reader(f)
+        DATASET = [row for row in reader]
 
     all_keys = list(r.scan_iter())
     print("all keys")
@@ -287,7 +292,7 @@ def favicon():
 
 #     for id1 in ids_list:
 #         for i in range(6):
-#             key = session['user_cookie'] + '-' + id1[i]
+#             key = user_id + '-' + id1[i]
 #             r.set(key, 'F' if mode == 'CDIRL' else 'M')
 
 #     delta = []
@@ -300,7 +305,7 @@ def favicon():
 
 @app.route('/<filename>')
 def display_results_page(filename, template_name):
-    global user_selections
+    global DATA_PAIR_LIST, data_pairs, DATASET, user_selections
     
     user_id = request.cookies.get("user_id")
 
@@ -311,7 +316,11 @@ def display_results_page(filename, template_name):
         with open(filename, newline='') as f:
             reader = csv.reader(f)
             data_pairs = [row for row in reader]
-        
+
+        # with open("data/section2.csv", newline='') as f:
+        #     reader = csv.reader(f)
+        #     DATASET = [row for row in reader]
+
         DATA_PAIR_LIST = dm.DataPairList(data_pairs)
         pairs_formatted = DATA_PAIR_LIST.get_data_display('masked')
         title = 'Interactive Record Linkage'
@@ -320,6 +329,15 @@ def display_results_page(filename, template_name):
         icons = DATA_PAIR_LIST.get_icons()[:(len(pairs_formatted) // 2)]
         user_selections = [""] * (len(pairs_formatted) // 2)
         ids = list(zip(ids_list[0::2], ids_list[1::2]))
+
+        # # total_characters = DATA_PAIR_LIST.get_total_characters()
+        # mindfil_total_characters_key = user_id + '_mindfil_total_characters'
+        # r.set(mindfil_total_characters_key, 100)
+        # mindfil_disclosed_characters_key = user_id + '_mindfil_disclosed_characters'
+        # r.set(mindfil_disclosed_characters_key, 0)
+        # KAPR_key = user_id + '_KAPR'
+        # r.set(KAPR_key, 0)
+
     except Exception as e:
         return "Can not open invalid or nonexistent file {} {} {}".format(filename, e, os.getcwd()), 500
     
@@ -327,8 +345,8 @@ def display_results_page(filename, template_name):
     response.set_cookie("user_id", user_id)
     return response
 
-def default_display(screen_width):
-    return display_results_page("data/ppirl.csv", screen_width)
+# def default_display(screen_width):
+#     return display_results_page("data/ppirl.csv", screen_width)
 
 @app.route('/')
 def index():
@@ -384,6 +402,7 @@ def submit_selections():
 
 @app.route('/get_cell', methods=['GET', 'POST'])
 def open_cell():
+    global DATA_PAIR_LIST, data_pairs, DATASET, user_selections
     id1 = request.args.get('id1')
     id2 = request.args.get('id2')
     mode = request.args.get('mode')
@@ -394,6 +413,8 @@ def open_cell():
     pair_id = int(pair_num)
     attr_id = int(attr_num)
 
+    assert DATA_PAIR_LIST is not None, "DATA_PAIR_LIST failed to initialize"
+
     pair = DATA_PAIR_LIST.get_data_pair(pair_id)
     attr = pair.get_attributes(attr_id)
     attr1 = attr[0]
@@ -402,8 +423,8 @@ def open_cell():
     helper1 = helper[0]
     helper2 = helper[1]
 
-    if mode == 'CDIRL':
-        return jsonify({"value1": attr1, "value2": attr2, "mode": "full"})
+    # if mode == 'CDIRL':
+    #     return jsonify({"value1": attr1, "value2": attr2, "mode": "full"})
 
     attr_display_next = pair.get_next_display(attr_id=attr_id, attr_mode=mode)
     ret = {"value1": attr_display_next[1][0], "value2": attr_display_next[1][1], "mode": attr_display_next[0]}
@@ -412,22 +433,24 @@ def open_cell():
     cdp_post = pair.get_character_disclosed_num(1, attr_id, ret['mode']) + pair.get_character_disclosed_num(2, attr_id, ret['mode'])
     cdp_increment = cdp_post - cdp_previous
 
-    mindfil_disclosed_characters_key = session['user_cookie'] + '_mindfil_disclosed_characters'
+    user_id = request.cookies.get("user_id")
+    mindfil_disclosed_characters_key = user_id + '_mindfil_disclosed_characters'
     r.incrby(mindfil_disclosed_characters_key, cdp_increment)
-    mindfil_total_characters_key = session['user_cookie'] + '_mindfil_total_characters'
+    mindfil_total_characters_key = user_id + '_mindfil_total_characters'
     cdp = 100.0 * int(r.get(mindfil_disclosed_characters_key)) / int(r.get(mindfil_total_characters_key))
+    print(cdp)
     ret['cdp'] = round(cdp, 1)
 
     old_display_status1 = []
     old_display_status2 = []
-    key1_prefix = session['user_cookie'] + '-' + pair_num + '-1-'
-    key2_prefix = session['user_cookie'] + '-' + pair_num + '-2-'
+    key1_prefix = user_id + '-' + pair_num + '-1-'
+    key2_prefix = user_id + '-' + pair_num + '-2-'
     for attr_i in range(6):
         old_display_status1.append(r.get(key1_prefix + str(attr_i)))
         old_display_status2.append(r.get(key2_prefix + str(attr_i)))
 
-    key1 = session['user_cookie'] + '-' + pair_num + '-1-' + attr_num
-    key2 = session['user_cookie'] + '-' + pair_num + '-2-' + attr_num
+    key1 = user_id + '-' + pair_num + '-1-' + attr_num
+    key2 = user_id + '-' + pair_num + '-2-' + attr_num
     if ret['mode'] == 'full':
         r.set(key1, 'F')
         r.set(key2, 'F')
@@ -437,16 +460,18 @@ def open_cell():
     else:
         pass
 
+    print("test")
     display_status1 = []
     display_status2 = []
     for attr_i in range(6):
         display_status1.append(r.get(key1_prefix + str(attr_i)))
         display_status2.append(r.get(key2_prefix + str(attr_i)))
+    print(display_status1)
     M = len(data_pairs)
     old_KAPR = dm.get_KAPR_for_dp(DATASET, pair, old_display_status1, M)
     KAPR = dm.get_KAPR_for_dp(DATASET, pair, display_status1, M)
     KAPRINC = KAPR - old_KAPR
-    KAPR_key = session['user_cookie'] + '_KAPR'
+    KAPR_key = user_id + '_KAPR'
     overall_KAPR = float(r.get(KAPR_key) or 0)
     overall_KAPR += KAPRINC
     r.incrbyfloat(KAPR_key, KAPRINC)
@@ -458,17 +483,6 @@ def open_cell():
     ret['new_delta_cdp'] = new_delta_cdp_list
 
     return jsonify(ret)
-# @app.route('/screen', methods=['POST'])
-# def screen():
-#     screen_width = request.json.get('width')
-
-#     # Decide based on width
-#     return jsonify({'template': default_display(screen_width)})
-#     # return jsonify({'template': render_template('mobile.html')})
-
-# @app.route('/<path:invalid_path>')
-# def handle_bad_path(invalid_path):
-#     return f"'{invalid_path}' doesn't exist.", 404
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 80))

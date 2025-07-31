@@ -32,7 +32,7 @@ function get_cell_ajax(current_cell) {
     });
 
     $.getJSON($SCRIPT_ROOT + '/get_cell', get_response(current_cell), function(data) {
-        console.log("get cell")
+        console.log(data)
         if(data.value1 && data.value2 && data.mode) {
             current_cell.classList.add("animated");
             current_cell.classList.add("fadeIn");
@@ -84,7 +84,7 @@ function make_cell_clickable() {
     });
 
     // bind the clickable cell to ajax openning cell action
-    $('.clickable_cell').bind('click', function() {
+    $('.clickable_cell').on('click', function() {
         var current_cell = this;
         if(current_cell.getAttribute("mode") != "full") {
             get_cell_ajax(current_cell);
@@ -101,7 +101,7 @@ function make_cell_clickable() {
     });
 
     // big cell is the name swap cell
-    $('.clickable_big_cell').bind('click', function() {
+    $('.clickable_big_cell').on('click', function() {
         var first_name_cell = this.children[0];
         var last_name_cell = this.children[2];
         if(first_name_cell.getAttribute("mode") != "full") {
