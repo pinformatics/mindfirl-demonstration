@@ -6,9 +6,13 @@
 */
 
 function get_response(clicked_object) {
+    console.log("get_response")
     var mode_info = clicked_object.getAttribute("mode");
+    console.log("1")
     var id1 = clicked_object.children[0].id;
+    console.log("2")
     var id2 = clicked_object.children[2].id;
+    console.log("return response")
 
     return {
         "id1": id1,
@@ -18,6 +22,7 @@ function get_response(clicked_object) {
 }
 
 function get_cell_ajax(current_cell) {
+    console.log("get cell ajax")
     $.fn.extend({
         animateCss: function (animationName, callback) {
             var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
@@ -32,6 +37,7 @@ function get_cell_ajax(current_cell) {
     });
 
     $.getJSON($SCRIPT_ROOT + '/get_cell', get_response(current_cell), function(data) {
+        console.log("foo")
         console.log(data)
         if(data.value1 && data.value2 && data.mode) {
             current_cell.classList.add("animated");
@@ -126,6 +132,7 @@ function make_cell_clickable() {
 
 // mirror: this function has a mirror at form_submit.js
 function refresh_delta() {
+    console.log("refresh delta")
     $('.clickable_cell').hover(function() {
         var id1 = this.children[0].getAttribute("id");
         var d = $DELTA[id1];

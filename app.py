@@ -1,3 +1,4 @@
+import time
 from flask import Flask, render_template, session, jsonify, request, make_response, Response, url_for
 from functools import wraps
 from datetime import datetime
@@ -317,9 +318,9 @@ def display_results_page(filename, template_name):
             reader = csv.reader(f)
             data_pairs = [row for row in reader]
 
-        # with open("data/section2.csv", newline='') as f:
-        #     reader = csv.reader(f)
-        #     DATASET = [row for row in reader]
+        with open("data/section2.csv", newline='') as f:
+            reader = csv.reader(f)
+            DATASET = [row for row in reader]
 
         DATA_PAIR_LIST = dm.DataPairList(data_pairs)
         pairs_formatted = DATA_PAIR_LIST.get_data_display('masked')
@@ -330,13 +331,14 @@ def display_results_page(filename, template_name):
         user_selections = [""] * (len(pairs_formatted) // 2)
         ids = list(zip(ids_list[0::2], ids_list[1::2]))
 
-        # # total_characters = DATA_PAIR_LIST.get_total_characters()
-        # mindfil_total_characters_key = user_id + '_mindfil_total_characters'
-        # r.set(mindfil_total_characters_key, 100)
-        # mindfil_disclosed_characters_key = user_id + '_mindfil_disclosed_characters'
-        # r.set(mindfil_disclosed_characters_key, 0)
-        # KAPR_key = user_id + '_KAPR'
-        # r.set(KAPR_key, 0)
+        # total_characters = DATA_PAIR_LIST.get_total_characters()
+        total_characters = 100
+        mindfil_total_characters_key = user_id + '_mindfil_total_characters'
+        r.set(mindfil_total_characters_key, total_characters)
+        mindfil_disclosed_characters_key = user_id + '_mindfil_disclosed_characters'
+        r.set(mindfil_disclosed_characters_key, 0)
+        KAPR_key = user_id + '_KAPR'
+        r.set(KAPR_key, 0)
 
     except Exception as e:
         return "Can not open invalid or nonexistent file {} {} {}".format(filename, e, os.getcwd()), 500
@@ -413,7 +415,9 @@ def open_cell():
     pair_id = int(pair_num)
     attr_id = int(attr_num)
 
+    print("before assertion")
     assert DATA_PAIR_LIST is not None, "DATA_PAIR_LIST failed to initialize"
+    print("after assertion")
 
     pair = DATA_PAIR_LIST.get_data_pair(pair_id)
     attr = pair.get_attributes(attr_id)
@@ -427,6 +431,7 @@ def open_cell():
     #     return jsonify({"value1": attr1, "value2": attr2, "mode": "full"})
 
     attr_display_next = pair.get_next_display(attr_id=attr_id, attr_mode=mode)
+    print(attr_display_next)
     ret = {"value1": attr_display_next[1][0], "value2": attr_display_next[1][1], "mode": attr_display_next[0]}
 
     cdp_previous = pair.get_character_disclosed_num(1, attr_id, mode) + pair.get_character_disclosed_num(2, attr_id, mode)
@@ -460,28 +465,48 @@ def open_cell():
     else:
         pass
 
-    print("test")
+    r.set("test1", time.time())
     display_status1 = []
     display_status2 = []
     for attr_i in range(6):
         display_status1.append(r.get(key1_prefix + str(attr_i)))
         display_status2.append(r.get(key2_prefix + str(attr_i)))
-    print(display_status1)
+    
+    r.set("test2", time.time())
+
     M = len(data_pairs)
+    if DATASET is not None:
+        r.set("test2-1", len(DATASET))
+    else:
+        r.set("test2-1", "None")
+
     old_KAPR = dm.get_KAPR_for_dp(DATASET, pair, old_display_status1, M)
     KAPR = dm.get_KAPR_for_dp(DATASET, pair, display_status1, M)
+
+    r.set("test2-2", time.time())
+
     KAPRINC = KAPR - old_KAPR
     KAPR_key = user_id + '_KAPR'
     overall_KAPR = float(r.get(KAPR_key) or 0)
     overall_KAPR += KAPRINC
+    
+    r.set("test3", time.time())
+
     r.incrbyfloat(KAPR_key, KAPRINC)
     ret['KAPR'] = round(100 * overall_KAPR, 1)
 
+    foo = [len(DATASET), len(pair), len(display_status1), M]
+    r.set("test3-1", foo)
+
     new_delta_list = dm.KAPR_delta(DATASET, pair, display_status1, M)
     ret['new_delta'] = new_delta_list
+
+    r.set("test3-2", time.time())
+
     new_delta_cdp_list = dm.cdp_delta(pair, display_status1, int(r.get(mindfil_disclosed_characters_key)), int(r.get(mindfil_total_characters_key)))
     ret['new_delta_cdp'] = new_delta_cdp_list
 
+    r.set("test4", time.time())
     return jsonify(ret)
 
 if __name__ == '__main__':
