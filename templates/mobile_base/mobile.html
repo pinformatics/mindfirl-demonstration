@@ -88,6 +88,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function paginateMobileTable() {
+    const columnLabels = ["ID", "FFreq", "First Name", "Last Name", "LFreq", "DOB", "Sex", "Race"];
+
     const table = document.getElementById("mobile-table");
     const rows = Array.from(table.rows);
     const colsPerPage = 1;
@@ -108,30 +110,34 @@ function paginateMobileTable() {
 
 
     function renderPage() {
-        rows.forEach(row => {
-            Array.from(row.cells).forEach((cell, i) => {
-                // Skip the first column (static row headers)
-                if (i === 0) return;
+    rows.forEach(row => {
+        const cells = Array.from(row.cells);
 
-                const shouldShow =
-                    i >= currentPage * colsPerPage + 1 &&
-                    i < (currentPage + 1) * colsPerPage + 1;
-
-                cell.style.display = shouldShow ? "table-cell" : "none";
-            });
-        });
-
-        const totalCols = rows[0]?.cells.length - 1 || 0;
-        const isLastPage = (currentPage + 1) * colsPerPage >= totalCols;
-
-        // Toggle button visibility
-        if (next && submitButton) {
-            next.style.display = isLastPage ? "none" : "inline-block";
-            submitButton.style.display = isLastPage ? "inline-block" : "none";
+        // Insert or update a leading label cell
+        let labelCell;
+        if (row.cells[0].classList.contains('row-label')) {
+            labelCell = row.cells[0];
+        } else {
+            labelCell = row.insertCell(0);
+            labelCell.classList.add('row-label');
+            labelCell.style.backgroundColor = '#eee';
+            labelCell.style.fontWeight = 'bold';
         }
 
-        updatePairCounter(rows, currentPage, colsPerPage);
-    }
+        // Example: Label this row based on current column (adjust as needed)
+        labelCell.textContent = `Col ${currentPage + 1}`;
+
+        // Loop through the rest of the cells (starting from index 1)
+        cells.forEach((cell, i) => {
+            const actualIndex = i + 1; // shift since we inserted a label
+            cell.style.display =
+                actualIndex >= currentPage * colsPerPage + 1 &&
+                actualIndex < (currentPage + 1) * colsPerPage + 1
+                    ? "table-cell"
+                    : "none";
+        });
+    });
+}
 
     function addControls() {
         const nav = document.createElement("div");

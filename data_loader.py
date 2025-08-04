@@ -3,6 +3,15 @@
 
 import json
 
+def load_data_from_csv(filename):
+    data = []
+    with open(filename, 'r') as filein:
+        for line in filein:
+            record = line.strip().split(',')
+            data.append(record)
+    return data
+
+
 def save_data_to_json(filename, data):
     fileout = open(filename, 'w+')
     fileout.write(data)

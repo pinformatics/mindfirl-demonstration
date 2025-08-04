@@ -6,14 +6,16 @@
 */
 
 function get_response(clicked_object) {
-    console.log("get_response")
-    var mode_info = clicked_object.getAttribute("mode");
-    console.log("1")
-    var id1 = clicked_object.children[0].id;
-    console.log("2")
-    var id2 = clicked_object.children[2].id;
-    console.log("return response")
 
+    // let current_cell = clicked_object.closest(".clickable_cell");
+    // let mode = current_cell?.getAttribute("mode");
+
+    var mode_info = clicked_object.getAttribute("mode");
+    var id1 = clicked_object.children[0].id;
+    var id2 = clicked_object.children[2].id;
+    console.log(id2)
+    console.log(mode_info)
+    
     return {
         "id1": id1,
         "id2": id2,
@@ -26,6 +28,7 @@ function get_cell_ajax(current_cell) {
     $.fn.extend({
         animateCss: function (animationName, callback) {
             var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+            console.log("animation")
             this.addClass('animated ' + animationName).one(animationEnd, function() {
                 $(this).removeClass('animated ' + animationName);
                 if (callback) {
@@ -38,7 +41,7 @@ function get_cell_ajax(current_cell) {
 
     $.getJSON($SCRIPT_ROOT + '/get_cell', get_response(current_cell), function(data) {
         console.log("foo")
-        console.log(data)
+        console.log(data.mode)
         if(data.value1 && data.value2 && data.mode) {
             current_cell.classList.add("animated");
             current_cell.classList.add("fadeIn");
@@ -83,14 +86,14 @@ function get_cell_ajax(current_cell) {
 // mirror: this function has a mirror at form_submit.js
 function make_cell_clickable() {
     // mark the double missing cell as unclickable
-    $('.clickable_cell').each(function() {
+    $('.clickable_cell').on("click", function() {
         if( this.children[0].innerHTML.indexOf('missing') != -1 && this.children[2].innerHTML.indexOf('missing') != -1 ) {
             this.classList.remove("clickable_cell");
         }
     });
 
     // bind the clickable cell to ajax openning cell action
-    $('.clickable_cell').on('click', function() {
+    $('.clickable_cell').on("click", function() {
         var current_cell = this;
         if(current_cell.getAttribute("mode") != "full") {
             get_cell_ajax(current_cell);
@@ -107,7 +110,7 @@ function make_cell_clickable() {
     });
 
     // big cell is the name swap cell
-    $('.clickable_big_cell').on('click', function() {
+    $('.clickable_big_cell').each(function() {
         var first_name_cell = this.children[0];
         var last_name_cell = this.children[2];
         if(first_name_cell.getAttribute("mode") != "full") {

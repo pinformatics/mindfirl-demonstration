@@ -205,6 +205,9 @@ class DataPair(object):
         return [self._data1_helpers[i], self._data2_helpers[i]]
 
     def get_next_display(self, attr_id, attr_mode):
+        if attr_id == None or attr_mode == None:
+            logging.error("get_next_display had a null parameter passed into it{}{}".format(attr_id, attr_mode))
+
         if attr_mode not in ['full', 'partial', 'masked', 'F', 'P', 'M']:
             logging.error('Error: unsupported attribute display mode.')
 
@@ -244,6 +247,8 @@ class DataPair(object):
             j - attribute j
             display_status - 'M', 'P', or 'F'
         """
+        
+        logging.error('Error: unsupported display status.{}+{}+{}'.format(row_number, j, display_status))
         value = ''
         if display_status == 'M' or display_status == 'masked':
             return 0
@@ -258,7 +263,7 @@ class DataPair(object):
             else:
                 value = self._data2_helpers[j]
         else:
-            logging.error('Error: unsupported display status.')
+            logging.error('Error: unsupported display status.{}'.format(display_status))
             return 0
 
         return self._get_character_disclosed_num(value)
@@ -506,7 +511,7 @@ def cdp_delta(data_pair, display_status, current_cd_num, total_characters):
         data_pair.get_character_disclosed_num(2, i, next_display)
         cdp_pre = 100.0*current_cd_num/total_characters
         cdp_post = 100.0*((1.0*current_cd_num+cd_post-cd_pre)/total_characters)
-        cdp_increment = round(cdp_post - cdp_pre,3);
+        cdp_increment = round(cdp_post - cdp_pre,3)
         id = data_pair.get_ids()[0][i]
         delta.append((id, cdp_increment))
     return delta
