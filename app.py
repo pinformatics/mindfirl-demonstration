@@ -347,9 +347,9 @@ def results_template():
         icons = DATA_PAIR_LIST.get_icons()[:(len(pairs_formatted) // 2)]
         ids = list(zip(ids_list[0::2], ids_list[1::2]))
 
-        return render_template("desktop_base/results_base.html", data=data, ids=ids, title=title, icons=icons, results_selections=selection_html_elements)
+        return render_template("results/results_base.html", data=data, ids=ids, title=title, icons=icons, results_selections=selection_html_elements)
     except Exception as e:
-        return "Can not open invalid or nonexistent file {} {} {}".format(filename, e), 500
+        return "Can not open invalid or nonexistent file {} {}".format(filename, e), 500
 
 @app.route('/update_selection', methods=['POST'])
 def update_selection():
